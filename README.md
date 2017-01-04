@@ -1,5 +1,5 @@
-# HLTHATS
-HLT HATS exercise for June 2016
+# HLTDAS2017
+HLT trigger exercise CMS DAS @ Fermilab LPC, January 2017
 
-See HATS twiki for detailed instructions:
-https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideHATS2016Trigger
+See DAS twiki for detailed instructions:
+https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideCMSDataAnalysisSchoolLPC2017TriggerExercise
