@@ -35,7 +35,7 @@ METTrigAnalyzerMiniAOD::METTrigAnalyzerMiniAOD(const edm::ParameterSet& ps)
   refTriggerName_ = ps.getUntrackedParameter<std::string>("refTriggerName","HLT_Ele27_eta2p1_WPTight_Gsf_v7");
   sigTriggerName_ = ps.getUntrackedParameter<std::string>("sigTriggerName","HLT_PFMET170_HBHECleaned_v6");
   triggerResultsToken_ = consumes<edm::TriggerResults> (ps.getUntrackedParameter<edm::InputTag>("triggerResultsTag", edm::InputTag("TriggerResults", "", "HLT")));
-  pfMetToken_ = consumes<edm::View<pat::MET> >(ps.getParameter<edm::InputTag>("pfMetInputTag_"));
+  pfMetToken_ = consumes<edm::View<pat::MET> >(ps.getUntrackedParameter<edm::InputTag>("pfMetInputTag_", edm::InputTag("slimmedMETs")));
   verbose_ = ps.getUntrackedParameter<bool>("verbose",false);
     
   // histogram setup
