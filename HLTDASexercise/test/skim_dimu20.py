@@ -19,11 +19,7 @@ process.maxEvents = cms.untracked.PSet(
 # Input source
 process.source = cms.Source("PoolSource",
    fileNames = cms.untracked.vstring(
-       '/store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v2/000/273/730/00000/0C1BE802-B221-E611-87ED-02163E0144E5.root',
-       '/store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v2/000/273/730/00000/0E2F8FFA-B121-E611-9B01-02163E01339C.root',
-       '/store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v2/000/273/730/00000/1264A406-B221-E611-8934-02163E014602.root',
-       '/store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v2/000/273/730/00000/1AF27A2B-B221-E611-BB6E-02163E0137D0.root',
-       '/store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v2/000/273/730/00000/1CBC1100-B221-E611-BD93-02163E014594.root',
+       '/store/data/Run2016G/SingleMuon/MINIAOD/23Sep2016-v1/1110000/A2C0F697-B19C-E611-A4D8-F04DA275BFF2.root',
    ),
 )
 
@@ -42,7 +38,7 @@ process.configurationMetadata = cms.untracked.PSet(
 # JSON
 
 import FWCore.PythonUtilities.LumiList as LumiList
-process.source.lumisToProcess = LumiList.LumiList(filename = 'Cert_271036-273730_13TeV_PromptReco_Collisions16_JSON.txt').getVLuminosityBlockRange()
+process.source.lumisToProcess = LumiList.LumiList(filename = 'Cert_271036-284044_13TeV_PromptReco_Collisions16_JSON.txt').getVLuminosityBlockRange()
 
 # skim definitions
 
@@ -62,14 +58,14 @@ process.dimu_filter_step = cms.Path(process.highptMuons + process.dimuonFilter)
 # Output definition
 
 process.Out = cms.OutputModule("PoolOutputModule",
-                               fileName = cms.untracked.string ("skim_5files.root"),
+                               fileName = cms.untracked.string ("skim.root"),
                                outputCommands = cms.untracked.vstring('keep *'),
                                SelectEvents = cms.untracked.PSet(
                                    SelectEvents = cms.vstring('dimu_filter_step')
                                ),
 )
   
-process.GlobalTag.globaltag = "80X_dataRun2_Prompt_v8"
+process.GlobalTag.globaltag = "80X_dataRun2_2016SeptRepro_v3"
 
 # Path and EndPath definitions
 process.output_step = cms.EndPath(process.Out)
