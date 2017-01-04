@@ -6,7 +6,7 @@ process = cms.Process('HLTANALYZER')
 process.load('Configuration.StandardSequences.Services_cff')
 process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
 process.load('FWCore.MessageService.MessageLogger_cfi')
-process.MessageLogger.cerr.FwkReport.reportEvery = 1000
+process.MessageLogger.cerr.FwkReport.reportEvery = 10000
 process.load('Configuration.EventContent.EventContent_cff')
 process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
 process.load('Configuration.StandardSequences.MagneticField_AutoFromDBCurrent_cff')
@@ -19,8 +19,8 @@ process.maxEvents = cms.untracked.PSet(
 
 # Input source
 process.source = cms.Source("PoolSource",
-#   fileNames = cms.untracked.vstring('/store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v2/000/273/730/00000/00378BFA-B121-E611-93ED-02163E0146D2.root'),
-   fileNames = cms.untracked.vstring('/store/user/hats/Trigger/2016/skim_SingleMuon_dimupt20_20k.root'), # file on EOS at LPC
+   fileNames = cms.untracked.vstring('/store/data/Run2016G/SingleMuon/MINIAOD/23Sep2016-v1/1110000/A2C0F697-B19C-E611-A4D8-F04DA275BFF2.root'),
+#   fileNames = cms.untracked.vstring('/store/user/hats/Trigger/2016/skim_SingleMuon_dimupt20_20k.root'), # skimmed file on EOS at LPC
 )
 
 
@@ -44,10 +44,10 @@ process.TFileService = cms.Service("TFileService",
 ### analyzer configuration
 
 process.singleMuTrigAnalyzerMiniAOD = cms.EDAnalyzer("SingleMuTrigAnalyzerMiniAOD")
-process.singleMuTrigAnalyzerMiniAOD.triggerName = cms.untracked.string("HLT_IsoTkMu22_v2")
+process.singleMuTrigAnalyzerMiniAOD.triggerName = cms.untracked.string("HLT_IsoMu24_v2")
 process.singleMuTrigAnalyzerMiniAOD.verbose = cms.untracked.bool(False)
 
-process.GlobalTag.globaltag = "80X_dataRun2_Prompt_v8"
+process.GlobalTag.globaltag = "80X_dataRun2_2016SeptRepro_v3"
 
 # Path and EndPath definitions
 process.HLTanalyzers = cms.Path(process.singleMuTrigAnalyzerMiniAOD)

@@ -6,7 +6,7 @@ process = cms.Process('HLTANALYZER')
 process.load('Configuration.StandardSequences.Services_cff')
 process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
 process.load('FWCore.MessageService.MessageLogger_cfi')
-process.MessageLogger.cerr.FwkReport.reportEvery = 1000
+process.MessageLogger.cerr.FwkReport.reportEvery = 10000
 process.load('Configuration.EventContent.EventContent_cff')
 process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
 process.load('Configuration.StandardSequences.MagneticField_AutoFromDBCurrent_cff')
@@ -20,7 +20,7 @@ process.maxEvents = cms.untracked.PSet(
 # Input source
 process.source = cms.Source("PoolSource",
    fileNames = cms.untracked.vstring('/store/data/Run2016G/SingleElectron/MINIAOD/23Sep2016-v1/100000/004A7893-A990-E611-B29F-002590E7DE36.root'),
-#   fileNames = cms.untracked.vstring('/store/user/hats/Trigger/2016/skim_JetHT_pfht475_15k.root'), # file on EOS at LPC
+#   fileNames = cms.untracked.vstring('/store/user/hats/Trigger/2016/skim_JetHT_pfht475_15k.root'), # skimmed file on EOS at LPC
 )
 
 
