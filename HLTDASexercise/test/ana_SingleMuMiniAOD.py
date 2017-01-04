@@ -19,8 +19,8 @@ process.maxEvents = cms.untracked.PSet(
 
 # Input source
 process.source = cms.Source("PoolSource",
-   fileNames = cms.untracked.vstring('/store/data/Run2016G/SingleMuon/MINIAOD/23Sep2016-v1/1110000/A2C0F697-B19C-E611-A4D8-F04DA275BFF2.root'),
-#   fileNames = cms.untracked.vstring('/store/user/hats/Trigger/2016/skim_SingleMuon_dimupt20_20k.root'), # skimmed file on EOS at LPC
+#   fileNames = cms.untracked.vstring('/store/data/Run2016G/SingleMuon/MINIAOD/23Sep2016-v1/1110000/A2C0F697-B19C-E611-A4D8-F04DA275BFF2.root'),
+   fileNames = cms.untracked.vstring('/store/user/cmsdas/2017/short_exercises/Trigger/skim_dimu20_SingleMuon_2016G_ReReco_180k.root'), # skimmed file on EOS at LPC
 )
 
 
