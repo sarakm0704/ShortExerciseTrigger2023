@@ -21,10 +21,17 @@ When you log into cmslpc, add a `-L` option to your ssh command:
     ssh -L localhost:8888:localhost:8888 <YOUR USERNAME>@cmslpc-sl6.fnal.gov
 
 Then you can make your area
-    
-    cmsrel CMSSW_9_2_15
-    cd CMSSW_9_2_15/src
-    cmsenv
+
+```    
+source /cvmfs/cms.cern.ch/cmsset_default.csh
+setenv SCRAM_ARCH slc6_amd64_gcc530
+cd nobackup/
+cmsrel CMSSW_9_2_15
+cd CMSSW_9_2_15/src
+cmsenv
+git clone https://github.com/jmduarte/HLTDAS2018.git
+scram b -j 4
+```
 
 And start Jupyter with this command:
 
