@@ -8,7 +8,7 @@
 
 #include "FWCore/Common/interface/TriggerNames.h"
 #include "FWCore/Common/interface/TriggerResultsByName.h"
-#include "HLTDAS2018/HLTDASexercise/interface/SingleMuTrigAnalyzerMiniAOD.h"
+#include "HLTDAS2019/HLTDASexercise/interface/SingleMuTrigAnalyzerMiniAOD.h"
 
 #include "DataFormats/HLTReco/interface/TriggerObject.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"

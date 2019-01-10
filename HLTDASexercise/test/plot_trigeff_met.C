@@ -1,5 +1,6 @@
 #include "TFile.h"
 #include "TH1.h"
+#include "TH2F.h"
 #include "TLegend.h"
 #include "TString.h"
 #include "TCanvas.h"
