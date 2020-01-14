@@ -1,8 +1,8 @@
-# HLTDAS2018
-HLT trigger exercise CMS DAS @ Fermilab LPC, January 2018
+# HLTDAS2020
+HLT trigger exercise CMS DAS @ Fermilab LPC, January 2020
 
 See DAS twiki for detailed instructions:
-https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideCMSDataAnalysisSchoolLPC2018TriggerExercise
+https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideCMSDataAnalysisSchoolLPC2020TriggerExercise
 
 ## Jupyter noteboooks
 
@@ -24,12 +24,12 @@ Then you can make your area
 
 ```    
 source /cvmfs/cms.cern.ch/cmsset_default.csh
-setenv SCRAM_ARCH slc6_amd64_gcc530
+setenv SCRAM_ARCH slc6_amd64_gcc700
 cd nobackup/
-cmsrel CMSSW_9_2_15
-cd CMSSW_9_2_15/src
+cmsrel CMSSW_10_2_9
+cd CMSSW_10_2_9/src
 cmsenv
-git clone https://github.com/jmduarte/HLTDAS2018.git
+git clone https://github.com/zhenbinwu/HLTDAS2020.git
 scram b -j 4
 ```
 
