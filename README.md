@@ -1,5 +1,5 @@
 # Trigger Short Exercise 2021
-Trigger short exercise CMS DAS @ Fermilab LPC, January 2021
+Trigger short exercise CMS DAS @ Fermilab LPC, January 2022
 
 See DAS twiki for detailed instructions:
 https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideCMSDataAnalysisSchoolLPC2021TriggerExercise
@@ -26,8 +26,8 @@ Then you can make your area
 source /cvmfs/cms.cern.ch/cmsset_default.csh
 setenv SCRAM_ARCH slc7_amd64_gcc700
 cd nobackup/
-cmsrel CMSSW_10_2_9
-cd CMSSW_10_2_9/src
+cmsrel CMSSW_10_6_25
+cd CMSSW_10_6_25/src
 cmsenv
 git clone https://github.com/ahenckel/ShortExerciseTrigger2021.git
 scram b -j 4
