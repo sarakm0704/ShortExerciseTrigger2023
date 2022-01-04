@@ -8,7 +8,7 @@
 
 #include "FWCore/Common/interface/TriggerNames.h"
 #include "FWCore/Common/interface/TriggerResultsByName.h"
-#include "ShortExerciseTrigger2021/ShortExerciseTrigger/interface/SingleMuTrigAnalyzerMiniAOD.h"
+#include "ShortExerciseTrigger2022/ShortExerciseTrigger/interface/SingleMuTrigAnalyzerMiniAOD.h"
 
 #include "DataFormats/HLTReco/interface/TriggerObject.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
