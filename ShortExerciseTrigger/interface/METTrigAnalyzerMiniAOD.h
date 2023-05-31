@@ -18,6 +18,7 @@
 #include "DataFormats/Common/interface/TriggerResults.h"
 #include "DataFormats/METReco/interface/PFMET.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
+#include "DataFormats/PatCandidates/interface/Electron.h"
 
 #include "DataFormats/Common/interface/ValueMap.h"
 
@@ -43,6 +44,7 @@ class METTrigAnalyzerMiniAOD : public edm::EDAnalyzer {
   bool analyzeTrigger(const edm::Event&, const edm::EventSetup&, const std::string& triggerName);
 
  private:
+  bool PassOfflineElectronSelection(const pat::Electron * ele, reco::Vertex::Point PV);
 
   /// module config parameters
   std::string   processName_;
@@ -51,13 +53,19 @@ class METTrigAnalyzerMiniAOD : public edm::EDAnalyzer {
   
   edm::EDGetTokenT<edm::TriggerResults> triggerResultsToken_;
   edm::EDGetTokenT<edm::View<pat::MET> > pfMetToken_;
+  edm::EDGetTokenT<std::vector<pat::Electron> > electronToken_;
+  edm::EDGetTokenT<std::vector<reco::Vertex> > PV_Token_;
   bool verbose_;
 
   /// additional class data memebers
-  edm::Handle<edm::TriggerResults>           triggerResultsHandle_;
+  edm::Handle<edm::TriggerResults> triggerResultsHandle_;
   HLTConfigProvider hltConfig_;
 
   std::map<std::string,TH1F*> hists_1d_;
+  unsigned int run_;
+  unsigned int lumi_;
+  unsigned event_;
+  bool isData_;
 
 };
 #endif

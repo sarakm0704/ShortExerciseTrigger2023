@@ -13,6 +13,8 @@
 #include "DataFormats/HLTReco/interface/TriggerObject.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
+#include "DataFormats/PatCandidates/interface/Electron.h"
+#include "DataFormats/Math/interface/deltaPhi.h"
 
 // ROOT includes
 #include "Math/VectorUtil.h"
@@ -39,7 +41,8 @@ METTrigAnalyzerMiniAOD::METTrigAnalyzerMiniAOD(const edm::ParameterSet& ps)
   triggerResultsToken_ = consumes<edm::TriggerResults> (ps.getUntrackedParameter<edm::InputTag>("triggerResultsTag", edm::InputTag("TriggerResults", "", "HLT")));
   
   pfMetToken_ = consumes<edm::View<pat::MET> >(ps.getUntrackedParameter<edm::InputTag>("pfMetInputTag_", edm::InputTag("slimmedMETs")));
-  
+  electronToken_ = consumes<std::vector<pat::Electron> >(ps.getUntrackedParameter<edm::InputTag>("electronsInputTag_", edm::InputTag("slimmedElectrons")));
+  PV_Token_ = consumes<std::vector<reco::Vertex> > (edm::InputTag("offlineSlimmedPrimaryVertices"));
   verbose_ = ps.getUntrackedParameter<bool>("verbose",false);
   
   // histogram setup
@@ -55,6 +58,10 @@ METTrigAnalyzerMiniAOD::METTrigAnalyzerMiniAOD(const edm::ParameterSet& ps)
     }
   hists_1d_["h_met_passtrig"] = fs->make<TH1F>("h_met_passtrig" , "; E_{T}^{miss} [GeV]" , 40, 100., 500. );
 
+  run_=0;
+  lumi_=0;
+  event_=0;
+  isData_=false;
 }
 
 //____________________________________________________________________________
@@ -112,7 +119,22 @@ METTrigAnalyzerMiniAOD::analyze(const edm::Event& iEvent, const edm::EventSetup&
   using namespace trigger;
 
   if (verbose_) cout << endl;
-
+  
+  // Event info
+  run_ = iEvent.id().run();
+  lumi_= iEvent.id().luminosityBlock();
+  event_=iEvent.id().event();
+  isData_=iEvent.isRealData();
+  
+  // For debugging purposes
+  if (0)
+    {
+      std::cout << " "<<std::endl;
+      std::cout << " Event = "<<event_<<std::endl;
+      std::cout << " Run = "<<run_<<std::endl;
+      std::cout << " Lumi block = "<<lumi_<<std::endl; 
+    }
+  
   // get event products
   iEvent.getByToken(triggerResultsToken_,triggerResultsHandle_);
   if (!triggerResultsHandle_.isValid()) {
@@ -126,9 +148,40 @@ METTrigAnalyzerMiniAOD::analyze(const edm::Event& iEvent, const edm::EventSetup&
   // retrieve necessary containers
   Handle<edm::View<pat::MET> > pfMetHandle_;
   iEvent.getByToken( pfMetToken_ , pfMetHandle_ );
-
+  
+  float met = ( pfMetHandle_->front() ).pt();;
+  float met_phi = ( pfMetHandle_->front() ).p4().phi();
+  if (verbose_) cout << "met: " << met << endl;
+  hists_1d_["h_met_all"]->Fill(met);
+  
+  edm::Handle< std::vector<pat::Electron> > electrons;
+  iEvent.getByToken(electronToken_, electrons );
+  
+  edm::Handle<std::vector<Vertex> > theVertices;
+  iEvent.getByToken(PV_Token_, theVertices);
+  int nVertex = theVertices->size();
+  Vertex::Point PV(0,0,0);
+  if (nVertex) PV = theVertices->begin()->position();
+  
+  int nelectrons = 0;
+  for(std::vector<pat::Electron>::const_iterator ele = (*electrons).begin(); ele !=(*electrons).end(); ele++)
+    {
+      double pt  = ele->pt();
+      double phi = ele->phi();
+      double eta = ele->eta();
+      double dPhi= reco::deltaPhi(phi, met_phi);
+      if (!PassOfflineElectronSelection(&*ele, PV)) continue;
+      if (pt < 40.0) continue;
+      if (dPhi < 0.5) continue;
+      if (0) std::cout << "Electron "<<nelectrons<<" pt="<<pt<<"  eta="<<eta<<"  phi="<<phi<<"   dPhi(e, met)="<<dPhi<<"   met="<<met<<std::endl;
+      nelectrons++;
+    }
+  
+  // Require exactly one tight electron
+  if (nelectrons != 1) return;
+  
   if (verbose_) cout << endl;
-
+  
   const unsigned int ntrigs(hltConfig_.size());
   const unsigned int refTriggerIndex(hltConfig_.triggerIndex(refTriggerName_));
   assert(refTriggerIndex==iEvent.triggerNames(*triggerResultsHandle_).triggerIndex(refTriggerName_));
@@ -152,11 +205,7 @@ METTrigAnalyzerMiniAOD::analyze(const edm::Event& iEvent, const edm::EventSetup&
     hists_1d_["h_passreftrig"]->Fill(0);
     return;
   }
-  
-  float met = ( pfMetHandle_->front() ).pt();;
-  if (verbose_) cout << "met: " << met << endl;
-  hists_1d_["h_met_all"]->Fill(met);
-  
+    
   // Signal triggers
   bool passedOR  = false;
   
@@ -189,3 +238,34 @@ METTrigAnalyzerMiniAOD::analyze(const edm::Event& iEvent, const edm::EventSetup&
   return;
 }
 
+// From: https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedElectronIdentificationRun3#Offline_selection_criteria_for_v
+bool METTrigAnalyzerMiniAOD::PassOfflineElectronSelection(const pat::Electron * ele, reco::Vertex::Point PV)
+{
+  const reco::GsfTrackRef gsfTrack = ele->gsfTrack();
+  if (!gsfTrack.isNonnull()) return false;
+  if(TMath::Abs(ele->superCluster()->eta()) >2.5) return false;
+  else if( TMath::Abs(ele->superCluster()->eta()) < 1.479)
+    {
+      if( TMath::Abs(ele->full5x5_sigmaIetaIeta()) > 0.0101 ) return  false;
+      if( TMath::Abs(ele->deltaEtaSuperClusterTrackAtVtx()) > 0.00411) return  false;
+      if( TMath::Abs(ele->deltaPhiSuperClusterTrackAtVtx()) > 0.116  ) return  false;
+      if( TMath::Abs(ele->hadronicOverEm())  > 0.104  ) return  false;
+      if( TMath::Abs(1.0/ele->ecalEnergy() - ele->eSuperClusterOverP()/ele->ecalEnergy() ) > 0.023 ) return  false;
+      if( TMath::Abs(gsfTrack->dxy(PV)) > 0.05) return false;
+      if( TMath::Abs(gsfTrack->dz(PV)) > 0.10) return false;
+      if(gsfTrack->hitPattern().numberOfLostHits(reco::HitPattern::MISSING_INNER_HITS)>2) return  false;
+    }
+  else {
+    if( TMath::Abs(ele->full5x5_sigmaIetaIeta()) > 0.027 ) return  false;
+    if( TMath::Abs(ele->deltaEtaSuperClusterTrackAtVtx()) > 0.00938 ) return  false;
+    if( TMath::Abs(ele->deltaPhiSuperClusterTrackAtVtx()) > 0.164  ) return  false;
+    if( TMath::Abs(ele->hadronicOverEm())  > 0.0897  ) return  false;
+    if( TMath::Abs(1.0/ele->ecalEnergy() - ele->eSuperClusterOverP()/ele->ecalEnergy()) > 0.018 ) return  false;
+    if( TMath::Abs(gsfTrack->dxy(PV)) > 0.10) return false;
+    if( TMath::Abs(gsfTrack->dz(PV)) > 0.20) return false;
+    if(gsfTrack->hitPattern().numberOfLostHits(reco::HitPattern::MISSING_INNER_HITS)>1) return  false;
+  }
+  double iso = (ele->pfIsolationVariables().sumChargedHadronPt + TMath::Max(0.0, ele->pfIsolationVariables().sumNeutralHadronEt + ele->pfIsolationVariables().sumPhotonEt - 0.5*ele->pfIsolationVariables().sumPUPt))/ele->pt() ; 
+  if(iso>0.2) return false; 
+  return true;
+}
