@@ -47,7 +47,8 @@ class METTrigAnalyzerMiniAOD : public edm::EDAnalyzer {
   /// module config parameters
   std::string   processName_;
   std::string   refTriggerName_;
-  std::string   sigTriggerName_;
+  std::vector<std::string> sigTriggerNames_;
+  
   edm::EDGetTokenT<edm::TriggerResults> triggerResultsToken_;
   edm::EDGetTokenT<edm::View<pat::MET> > pfMetToken_;
   bool verbose_;

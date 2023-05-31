@@ -18,7 +18,7 @@
 #include "Math/VectorUtil.h"
 
 #include <cassert>
-
+#include <cstring>
 using namespace reco;
 using namespace edm;
 
@@ -32,16 +32,27 @@ METTrigAnalyzerMiniAOD::METTrigAnalyzerMiniAOD(const edm::ParameterSet& ps)
   using namespace edm;
 
   processName_ = ps.getUntrackedParameter<std::string>("processName","HLT");
-  refTriggerName_ = ps.getUntrackedParameter<std::string>("refTriggerName","HLT_Ele27_eta2p1_WPTight_Gsf_v7");
-  sigTriggerName_ = ps.getUntrackedParameter<std::string>("sigTriggerName","HLT_PFMET170_HBHECleaned_v6");
+  
+  refTriggerName_ = ps.getUntrackedParameter<std::string>("refTriggerName","HLT_Ele32_WPTight_Gsf_v17");
+  sigTriggerNames_ = ps.getUntrackedParameter<std::vector<std::string> >("sigTriggerNames");
+  
   triggerResultsToken_ = consumes<edm::TriggerResults> (ps.getUntrackedParameter<edm::InputTag>("triggerResultsTag", edm::InputTag("TriggerResults", "", "HLT")));
+  
   pfMetToken_ = consumes<edm::View<pat::MET> >(ps.getUntrackedParameter<edm::InputTag>("pfMetInputTag_", edm::InputTag("slimmedMETs")));
+  
   verbose_ = ps.getUntrackedParameter<bool>("verbose",false);
-    
+  
   // histogram setup
   edm::Service<TFileService> fs;
+  
   hists_1d_["h_passreftrig"] = fs->make<TH1F>("h_passreftrig" , "; passed ref trigger" , 2 , 0. , 2. );
   hists_1d_["h_met_all"] = fs->make<TH1F>("h_met_all" , "; E_{T}^{miss} [GeV]" , 40, 100., 500. );
+  for (unsigned int trig=0; trig<sigTriggerNames_.size(); trig++)
+    {
+      string h_name = "h_met_passtrig_" + sigTriggerNames_.at(trig);
+      const char* hname = h_name.c_str();
+      hists_1d_[hname] = fs->make<TH1F>(hname, "; E_{T}^{miss} [GeV]" , 40, 100., 500. );
+    }
   hists_1d_["h_met_passtrig"] = fs->make<TH1F>("h_met_passtrig" , "; E_{T}^{miss} [GeV]" , 40, 100., 500. );
 
 }
@@ -72,12 +83,15 @@ METTrigAnalyzerMiniAOD::beginRun(edm::Run const & iRun, edm::EventSetup const& i
 	     << " TriggerName " << refTriggerName_ 
 	     << " not available in config!" << endl;
       }
-      unsigned int sigTriggerIndex(hltConfig_.triggerIndex(sigTriggerName_));
-      if (sigTriggerIndex>=n) {
-	cout << "METTrigAnalyzerMiniAOD::analyze:"
-	     << " TriggerName " << sigTriggerName_ 
-	     << " not available in config!" << endl;
-      }
+      for (unsigned int itrig=0; itrig<sigTriggerNames_.size(); itrig++)
+	{
+	  unsigned int sigTriggerIndex(hltConfig_.triggerIndex(sigTriggerNames_.at(itrig)));
+	  if (sigTriggerIndex>=n) {
+	    cout << "METTrigAnalyzerMiniAOD::analyze:"
+		 << " TriggerName " << sigTriggerNames_.at(itrig) 
+		 << " not available in config!" << endl;
+	  }
+	}
     } // if changed
   } else {
     cout << "METTrigAnalyzerMiniAOD::analyze:"
@@ -118,45 +132,59 @@ METTrigAnalyzerMiniAOD::analyze(const edm::Event& iEvent, const edm::EventSetup&
   const unsigned int ntrigs(hltConfig_.size());
   const unsigned int refTriggerIndex(hltConfig_.triggerIndex(refTriggerName_));
   assert(refTriggerIndex==iEvent.triggerNames(*triggerResultsHandle_).triggerIndex(refTriggerName_));
-  const unsigned int sigTriggerIndex(hltConfig_.triggerIndex(sigTriggerName_));
-  assert(sigTriggerIndex==iEvent.triggerNames(*triggerResultsHandle_).triggerIndex(sigTriggerName_));
-
+  
   // abort on invalid trigger name
   if (refTriggerIndex>=ntrigs) {
     cout << "METTrigAnalyzerMiniAOD::analyzeTrigger: path "
 	 << refTriggerName_ << " - not found!" << endl;
     return;
   }
-  if (sigTriggerIndex>=ntrigs) {
-    cout << "METTrigAnalyzerMiniAOD::analyzeTrigger: path "
-	 << sigTriggerName_ << " - not found!" << endl;
-    return;
-  }
-
   if (verbose_) {
     cout << "METTrigAnalyzerMiniAOD::analyzeTrigger: reference path "
 	 << refTriggerName_ << " [" << refTriggerIndex << "]" << endl;
-    cout << "METTrigAnalyzerMiniAOD::analyzeTrigger: signal path "
-	 << sigTriggerName_ << " [" << sigTriggerIndex << "]" << endl;
   }
   
-  // modules on this trigger path
+  // Reference trigger
   bool refAccept = triggerResultsHandle_->accept(refTriggerIndex);
-  bool sigAccept = triggerResultsHandle_->accept(sigTriggerIndex);
-
   if (refAccept) hists_1d_["h_passreftrig"]->Fill(1);
   else {  
     // don't consider event if reference trigger didn't fire
     hists_1d_["h_passreftrig"]->Fill(0);
     return;
   }
-
+  
   float met = ( pfMetHandle_->front() ).pt();;
   if (verbose_) cout << "met: " << met << endl;
-
   hists_1d_["h_met_all"]->Fill(met);
-  if (sigAccept) hists_1d_["h_met_passtrig"]->Fill(met);
   
+  // Signal triggers
+  bool passedOR  = false;
+  
+  // Loop over signal triggers
+  for (unsigned int itrig=0; itrig<sigTriggerNames_.size(); itrig++)
+    {
+      const unsigned int sigTriggerIndex(hltConfig_.triggerIndex(sigTriggerNames_.at(itrig)));
+      assert(sigTriggerIndex==iEvent.triggerNames(*triggerResultsHandle_).triggerIndex(sigTriggerNames_.at(itrig)));
+      if (sigTriggerIndex>=ntrigs) {
+	cout << "METTrigAnalyzerMiniAOD::analyzeTrigger: path "
+	     << sigTriggerNames_.at(itrig) << " - not found!" << endl;
+	return;
+      }
+      if (verbose_) {
+	cout << "METTrigAnalyzerMiniAOD::analyzeTrigger: signal path "
+	     << sigTriggerNames_.at(itrig) << " [" << sigTriggerIndex << "]" << endl;
+      }
+            
+      bool sigAccept = triggerResultsHandle_->accept(sigTriggerIndex);
+      if (sigAccept) passedOR = true;
+
+      string h_name = "h_met_passtrig_" + sigTriggerNames_.at(itrig);
+      const char* hname = h_name.c_str();
+      if (sigAccept) hists_1d_[hname]->Fill(met);
+    }
+  
+  // Logical OR of all triggers
+  if (passedOR) hists_1d_["h_met_passtrig"]->Fill(met);
   if (verbose_) cout << endl;
   return;
 }
