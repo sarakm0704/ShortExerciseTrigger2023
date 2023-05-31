@@ -1,8 +1,8 @@
-# Trigger Short Exercise 2021
-Trigger short exercise CMS DAS @ Fermilab LPC, January 2022
+# Trigger Short Exercise 2023
+Trigger short exercise CMS DAS @ CERN, June 2023
 
 See DAS twiki for detailed instructions:
-https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideCMSDataAnalysisSchoolLPC2021TriggerExercise
+https://twiki.cern.ch/twiki/bin/viewauth/CMS/SWGuideCMSDataAnalysisSchoolCERN2023TriggerExercise
 
 ## Jupyter noteboooks
 
