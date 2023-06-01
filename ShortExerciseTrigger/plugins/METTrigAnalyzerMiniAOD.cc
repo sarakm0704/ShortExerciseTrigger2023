@@ -151,8 +151,6 @@ METTrigAnalyzerMiniAOD::analyze(const edm::Event& iEvent, const edm::EventSetup&
   
   float met = ( pfMetHandle_->front() ).pt();;
   float met_phi = ( pfMetHandle_->front() ).p4().phi();
-  if (verbose_) cout << "met: " << met << endl;
-  hists_1d_["h_met_all"]->Fill(met);
   
   edm::Handle< std::vector<pat::Electron> > electrons;
   iEvent.getByToken(electronToken_, electrons );
@@ -205,7 +203,10 @@ METTrigAnalyzerMiniAOD::analyze(const edm::Event& iEvent, const edm::EventSetup&
     hists_1d_["h_passreftrig"]->Fill(0);
     return;
   }
-    
+  
+  if (verbose_) cout << "met: " << met << endl;
+  hists_1d_["h_met_all"]->Fill(met);
+  
   // Signal triggers
   bool passedOR  = false;
   
