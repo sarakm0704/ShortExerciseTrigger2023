@@ -32,7 +32,7 @@ SingleMuTrigAnalyzerMiniAOD::SingleMuTrigAnalyzerMiniAOD(const edm::ParameterSet
   using namespace edm;
 
   processName_ = ps.getUntrackedParameter<std::string>("processName","HLT");
-  triggerName_ = ps.getUntrackedParameter<std::string>("triggerName","HLT_IsoMu22_v2");
+  triggerName_ = ps.getUntrackedParameter<std::string>("triggerName","HLT_IsoMu24_v15");
   triggerResultsToken_ = consumes<edm::TriggerResults> (ps.getUntrackedParameter<edm::InputTag>("triggerResultsTag", edm::InputTag("TriggerResults", "", "HLT")));
   triggerObjectStandAloneToken_ = consumes<pat::TriggerObjectStandAloneCollection> (ps.getUntrackedParameter<edm::InputTag>("triggerObjectsStandAloneTag", edm::InputTag("selectedPatTrigger")));
   muonsToken_ = consumes<View<pat::Muon> > (ps.getUntrackedParameter<edm::InputTag>("muonsInputTag",edm::InputTag("slimmedMuons")));

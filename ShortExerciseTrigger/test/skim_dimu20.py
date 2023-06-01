@@ -10,16 +10,16 @@ process.load('Configuration.EventContent.EventContent_cff')
 process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
 process.load('Configuration.StandardSequences.MagneticField_AutoFromDBCurrent_cff')
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
-process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
+process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(-1)
+    input = cms.untracked.int32(100)
 )
 
 # Input source
 process.source = cms.Source("PoolSource",
    fileNames = cms.untracked.vstring(
-       '/store/data/Run2016G/SingleMuon/MINIAOD/23Sep2016-v1/1110000/A2C0F697-B19C-E611-A4D8-F04DA275BFF2.root',
+       '/store/data/Run2022F/Muon/MINIAOD/PromptReco-v1/000/360/390/00000/282e5859-6f59-41bc-ae92-3892ec9aa3af.root',
    ),
 )
 
@@ -38,7 +38,7 @@ process.configurationMetadata = cms.untracked.PSet(
 # JSON
 
 import FWCore.PythonUtilities.LumiList as LumiList
-process.source.lumisToProcess = LumiList.LumiList(filename = 'Cert_271036-284044_13TeV_PromptReco_Collisions16_JSON.txt').getVLuminosityBlockRange()
+process.source.lumisToProcess = LumiList.LumiList(filename = 'Cert_Collisions2022_355100_362760_Golden_JSON.txt').getVLuminosityBlockRange()
 
 # skim definitions
 
@@ -65,7 +65,7 @@ process.Out = cms.OutputModule("PoolOutputModule",
                                ),
 )
   
-process.GlobalTag.globaltag = "80X_dataRun2_2016SeptRepro_v3"
+process.GlobalTag.globaltag = "124X_dataRun3_Prompt_v10"
 
 # Path and EndPath definitions
 process.output_step = cms.EndPath(process.Out)
