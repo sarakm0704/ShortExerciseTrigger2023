@@ -63,8 +63,6 @@ def CreatePlot(var):
     # Efficiency vs pt
     hDen = workdir.Get("h_%s_probe_all" % (var))
     
-    print(type(hDen))
-    
     hNum = workdir.Get("h_%s_probe_pass" % (var))
     hEff = ROOT.TGraphAsymmErrors(hNum, hDen)
     hEff.SetLineColor(ROOT.kRed)
