@@ -19,7 +19,7 @@ void plot_trigeff_met (const TString& infile = "histos_METTrigAnalyzer.root") {
   
   TFile* f_in = new TFile(infile);
 
-  // ---- efficiency vs met
+  // ---- Get all histograms
   
   TH1F* h_met_denom = (TH1F*) f_in->Get("metTrigAnalyzerMiniAOD/h_met_all");
   TH1F* h_met_num_HLT_PFMET120_PFMHT120_IDTight_v = (TH1F*) f_in->Get("metTrigAnalyzerMiniAOD/h_met_passtrig_HLT_PFMET120_PFMHT120_IDTight_v22");
@@ -31,8 +31,27 @@ void plot_trigeff_met (const TString& infile = "histos_METTrigAnalyzer.root") {
   TH1F* h_met_num_HLT_PFMETTypeOne140_PFMHT140_IDTight_v = (TH1F*) f_in->Get("metTrigAnalyzerMiniAOD/h_met_passtrig_HLT_PFMETTypeOne140_PFMHT140_IDTight_v13");
   TH1F* h_met_num = (TH1F*) f_in->Get("metTrigAnalyzerMiniAOD/h_met_passtrig");
   
-  TCanvas* c_met = new TCanvas("c_met","c_met");
-  c_met->SetGrid(1,1);
+  // ---- Create TEfficiency histograms
+  TEfficiency* h_met_eff = new TEfficiency(*h_met_num, *h_met_denom);
+  TEfficiency* h_met_eff_HLT_PFMET120_PFMHT120_IDTight_v = new TEfficiency(*h_met_num_HLT_PFMET120_PFMHT120_IDTight_v, *h_met_denom);
+  TEfficiency* h_met_eff_HLT_PFMET130_PFMHT130_IDTight_v = new TEfficiency(*h_met_num_HLT_PFMET130_PFMHT130_IDTight_v, *h_met_denom);
+  TEfficiency* h_met_eff_HLT_PFMET140_PFMHT140_IDTight_v = new TEfficiency(*h_met_num_HLT_PFMET140_PFMHT140_IDTight_v, *h_met_denom);
+  TEfficiency* h_met_eff_HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v = new TEfficiency(*h_met_num_HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v, *h_met_denom);
+  TEfficiency* h_met_eff_HLT_PFMETNoMu130_PFMHTNoMu130_IDTight_v = new TEfficiency(*h_met_num_HLT_PFMETNoMu130_PFMHTNoMu130_IDTight_v, *h_met_denom);
+  TEfficiency* h_met_eff_HLT_PFMETNoMu140_PFMHTNoMu140_IDTight_v = new TEfficiency(*h_met_num_HLT_PFMETNoMu140_PFMHTNoMu140_IDTight_v, *h_met_denom);
+  TEfficiency* h_met_eff_HLT_PFMETTypeOne140_PFMHT140_IDTight_v = new TEfficiency(*h_met_num_HLT_PFMETTypeOne140_PFMHT140_IDTight_v, *h_met_denom);
+  
+  //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  // Comparison between:
+  // - OR of (HLT_PFMET120_PFMHT120_IDTight || HLT_PFMETNoMu120_PFMHTNoMu120_IDTight || HLT_PFMETTypeOne140_PFMHT140_IDTight_v)
+  // - HLT_PFMET120_PFMHT120_IDTight
+  // - HLT_PFMETNoMu120_PFMHTNoMu120_IDTight
+  // - HLT_PFMETTypeOne140_PFMHT140_IDTight_v
+  //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  TCanvas* c_met = new TCanvas("c_met", "c_met", 800, 700);
+  c_met->SetLeftMargin(0.12);
+  c_met->SetRightMargin(0.15);
+  c_met->SetLeftMargin(0.13);
   c_met->cd();
   
   auto legend = new TLegend(0.5,0.20,0.90,0.50);
@@ -46,59 +65,77 @@ void plot_trigeff_met (const TString& infile = "histos_METTrigAnalyzer.root") {
   h_met_axis->Draw();
   
   // Logical OR of all signal paths
-  TEfficiency* h_met_eff = new TEfficiency(*h_met_num, *h_met_denom);
   h_met_eff->SetLineColor(kBlack);
   h_met_eff->SetMarkerColor(kBlack);
   h_met_eff->SetMarkerStyle(20);
   h_met_eff->Draw("pe same");
   legend->AddEntry(h_met_eff, "OR");
-
-  TEfficiency* h_met_eff_HLT_PFMET120_PFMHT120_IDTight_v = new TEfficiency(*h_met_num_HLT_PFMET120_PFMHT120_IDTight_v, *h_met_denom);
+  
   h_met_eff_HLT_PFMET120_PFMHT120_IDTight_v->SetLineColor(kGreen+1);
   h_met_eff_HLT_PFMET120_PFMHT120_IDTight_v->SetMarkerColor(kGreen+1);
   h_met_eff_HLT_PFMET120_PFMHT120_IDTight_v->SetMarkerStyle(22);
   h_met_eff_HLT_PFMET120_PFMHT120_IDTight_v->Draw("pe same");
   legend->AddEntry(h_met_eff_HLT_PFMET120_PFMHT120_IDTight_v, "HLT_PFMET120_PFMHT120_IDTight_v");
-  
-  //TEfficiency* h_met_eff_HLT_PFMET130_PFMHT130_IDTight_v = new TEfficiency(*h_met_num_HLT_PFMET130_PFMHT130_IDTight_v, *h_met_denom);
-  //h_met_eff_HLT_PFMET130_PFMHT130_IDTight_v->SetLineColor(kMagenta+2);
-  //h_met_eff_HLT_PFMET130_PFMHT130_IDTight_v->SetMarkerColor(kMagenta+2);
-  //h_met_eff_HLT_PFMET130_PFMHT130_IDTight_v->Draw("pe same");
-  
-  //TEfficiency* h_met_eff_HLT_PFMET140_PFMHT140_IDTight_v = new TEfficiency(*h_met_num_HLT_PFMET140_PFMHT140_IDTight_v, *h_met_denom);
-  //h_met_eff_HLT_PFMET140_PFMHT140_IDTight_v->SetLineColor(kBlue);
-  //h_met_eff_HLT_PFMET140_PFMHT140_IDTight_v->SetMarkerColor(kBlue);
-  //h_met_eff_HLT_PFMET140_PFMHT140_IDTight_v->Draw("pe same");
-  
-  TEfficiency* h_met_eff_HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v = new TEfficiency(*h_met_num_HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v, *h_met_denom);
+    
   h_met_eff_HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v->SetLineColor(kBlue);
   h_met_eff_HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v->SetMarkerColor(kBlue);
   h_met_eff_HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v->SetMarkerStyle(34);
   h_met_eff_HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v->Draw("pe same");
   legend->AddEntry(h_met_eff_HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v, "HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v");
   
-  //TEfficiency* h_met_eff_HLT_PFMETNoMu130_PFMHTNoMu130_IDTight_v = new TEfficiency(*h_met_num_HLT_PFMETNoMu130_PFMHTNoMu130_IDTight_v, *h_met_denom);
-  //h_met_eff_HLT_PFMETNoMu130_PFMHTNoMu130_IDTight_v->SetLineColor(kAzure-4);
-  //h_met_eff_HLT_PFMETNoMu130_PFMHTNoMu130_IDTight_v->SetMarkerColor(kAzure-4);
-  //h_met_eff_HLT_PFMETNoMu130_PFMHTNoMu130_IDTight_v->Draw("pe same");
-  
-  //TEfficiency* h_met_eff_HLT_PFMETNoMu140_PFMHTNoMu140_IDTight_v = new TEfficiency(*h_met_num_HLT_PFMETNoMu140_PFMHTNoMu140_IDTight_v, *h_met_denom);
-  //h_met_eff_HLT_PFMETNoMu140_PFMHTNoMu140_IDTight_v->SetLineColor(kRed);
-  //h_met_eff_HLT_PFMETNoMu140_PFMHTNoMu140_IDTight_v->SetMarkerColor(kRed);
-  //h_met_eff_HLT_PFMETNoMu140_PFMHTNoMu140_IDTight_v->Draw("pe same");
-  
-  TEfficiency* h_met_eff_HLT_PFMETTypeOne140_PFMHT140_IDTight_v = new TEfficiency(*h_met_num_HLT_PFMETTypeOne140_PFMHT140_IDTight_v, *h_met_denom);
   h_met_eff_HLT_PFMETTypeOne140_PFMHT140_IDTight_v->SetLineColor(kRed);
   h_met_eff_HLT_PFMETTypeOne140_PFMHT140_IDTight_v->SetMarkerStyle(29);
   h_met_eff_HLT_PFMETTypeOne140_PFMHT140_IDTight_v->SetMarkerColor(kRed);
   h_met_eff_HLT_PFMETTypeOne140_PFMHT140_IDTight_v->Draw("pe same");
-  
   legend->AddEntry(h_met_eff_HLT_PFMETTypeOne140_PFMHT140_IDTight_v, "HLT_PFMETTypeOne140_PFMHT140_IDTight_v");
+  
   legend->Draw("same");
   
   c_met->Modified();
   c_met->Update();
+  c_met->SaveAs("METEfficiency_MiniAOD.pdf");
   
-  c_met->SaveAs("METEfficiency.pdf");
+  //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  // Comparison between:
+  // - HLT_PFMET120_PFMHT120_IDTight
+  // - HLT_PFMET130_PFMHT130_IDTight
+  // - HLT_PFMET140_PFMHT140_IDTight
+  //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  TCanvas* c2 = new TCanvas("c2", "c2", 800, 700);
+  c2->SetLeftMargin(0.12);
+  c2->SetRightMargin(0.15);
+  c2->SetLeftMargin(0.13);
+  c2->cd();
+  
+  auto legend2 = new TLegend(0.5,0.20,0.90,0.50);
+  legend2->SetFillColor(0);
+  legend2->SetFillStyle(0);
+  legend2->SetBorderSize(0);
+  
+  h_met_axis->Draw();
+  
+  h_met_eff_HLT_PFMET120_PFMHT120_IDTight_v->SetLineColor(kGreen+1);
+  h_met_eff_HLT_PFMET120_PFMHT120_IDTight_v->SetMarkerColor(kGreen+1);
+  h_met_eff_HLT_PFMET120_PFMHT120_IDTight_v->SetMarkerStyle(22);
+  h_met_eff_HLT_PFMET120_PFMHT120_IDTight_v->Draw("pe same");
+  legend2->AddEntry(h_met_eff_HLT_PFMET120_PFMHT120_IDTight_v, "HLT_PFMET120_PFMHT120_IDTight_v");
+  
+  h_met_eff_HLT_PFMET130_PFMHT130_IDTight_v->SetLineColor(kRed);
+  h_met_eff_HLT_PFMET130_PFMHT130_IDTight_v->SetMarkerColor(kRed);
+  h_met_eff_HLT_PFMET130_PFMHT130_IDTight_v->SetMarkerStyle(21);
+  h_met_eff_HLT_PFMET130_PFMHT130_IDTight_v->Draw("pe same");
+  legend2->AddEntry(h_met_eff_HLT_PFMET130_PFMHT130_IDTight_v, "HLT_PFMET130_PFMHT130_IDTight_v");
+  
+  h_met_eff_HLT_PFMET140_PFMHT140_IDTight_v->SetLineColor(kBlue);
+  h_met_eff_HLT_PFMET140_PFMHT140_IDTight_v->SetMarkerColor(kBlue);
+  h_met_eff_HLT_PFMET140_PFMHT140_IDTight_v->SetMarkerStyle(22);
+  h_met_eff_HLT_PFMET140_PFMHT140_IDTight_v->Draw("pe same");
+  legend2->AddEntry(h_met_eff_HLT_PFMET140_PFMHT140_IDTight_v, "HLT_PFMET140_PFMHT140_IDTight_v");
+  
+  legend2->Draw("same");
+  c2->Modified();
+  c2->Update();
+  c2->SaveAs("METEfficiency_HLT_PFMETX_PFMHTX_IDTight_MiniAOD.pdf");
+  
   return;
 }

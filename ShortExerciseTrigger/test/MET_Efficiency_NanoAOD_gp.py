@@ -53,7 +53,7 @@ class TrigMETAnalysis(Module):
         for el in electrons:
             if abs(el.eta) > 2.4: continue
             if el.pt < 40: continue
-            if el.cutBased < 4: continue # (cutBased ID: 0:fail, 1:veto, 2:loose, 3:medium, 4:tight)
+            #if el.cutBased < 4: continue # (cutBased ID: 0:fail, 1:veto, 2:loose, 3:medium, 4:tight)
             nEle += 1
 
         # Keep only events with exactly one electron with pT > 40 GeV, tight ID

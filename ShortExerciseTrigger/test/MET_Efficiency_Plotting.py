@@ -1,7 +1,6 @@
 import ROOT
 import math 
 import time
-from plot_dict import *
 
 def getCanvas():
     d = ROOT.TCanvas("", "", 800, 700)
@@ -31,6 +30,19 @@ def AddCMSText(setx=0.205, sety=0.905):
     texcms.SetTextSize(30);
     return texcms
 
+def createLegend():
+    legend = ROOT.TLegend(0.44, 0.193, 0.82, 0.44)
+    legend.SetFillColor(0)
+    legend.SetFillStyle(0);
+    legend.SetBorderSize(0);
+    return legend
+
+def SetStyle(h, color, marker_style):
+    h.SetLineColor(color)
+    h.SetMarkerColor(color)
+    h.SetMarkerStyle(marker_style)
+    return h
+
 ROOT.gROOT.SetBatch(True)
 ROOT.gStyle.SetOptStat(0)
 ROOT.gStyle.SetTextFont(42)
@@ -38,22 +50,22 @@ ROOT.gStyle.SetTextFont(42)
 file = ROOT.TFile("histos_METTrigNanoAOD.root")
 workdir =file.GetDirectory("metTrigAnalyzerNanoAOD")
 
-# Create the canvas
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# Comparison between:
+# - OR of (HLT_PFMET120_PFMHT120_IDTight || HLT_PFMETNoMu120_PFMHTNoMu120_IDTight || HLT_PFMETTypeOne140_PFMHT140_IDTight_v)
+# - HLT_PFMET120_PFMHT120_IDTight
+# - HLT_PFMETNoMu120_PFMHTNoMu120_IDTight
+# - HLT_PFMETTypeOne140_PFMHT140_IDTight_v
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 canvas=getCanvas()
-
-legend = ROOT.TLegend(0.4412607,0.1932773,0.8223496,0.4453782)
-legend.SetFillColor(0)
-legend.SetFillStyle(0);
-legend.SetBorderSize(0);
+legend=createLegend()
 
 Denominator = workdir.Get("h_met_all")
 
 # OR of all MET triggers
 Numerator   = workdir.Get("h_met_passtrig")
 Efficiency = ROOT.TGraphAsymmErrors(Numerator,Denominator,'MET')
-Efficiency.SetLineColor(ROOT.kBlack)
-Efficiency.SetMarkerStyle(20)
-Efficiency.SetMarkerColor(ROOT.kBlack)
+Efficiency = SetStyle(Efficiency, ROOT.kBlack, 20)
 Efficiency.GetXaxis().SetTitle("E_{T}^{miss} [GeV]")
 Efficiency.GetYaxis().SetTitle("Efficiency")
 Efficiency.GetYaxis().SetRange(0, 2) 
@@ -63,27 +75,21 @@ legend.AddEntry(Efficiency,"OR", "ep")
 # HLT_PFMET120_PFMHT120_IDTight
 hNum_HLT_PFMET120_PFMHT120_IDTight = workdir.Get("h_met_passtrig_HLT_PFMET120_PFMHT120_IDTight")
 hEff_HLT_PFMET120_PFMHT120_IDTight = ROOT.TGraphAsymmErrors(hNum_HLT_PFMET120_PFMHT120_IDTight, Denominator)
-hEff_HLT_PFMET120_PFMHT120_IDTight.SetLineColor(ROOT.kGreen+1)
-hEff_HLT_PFMET120_PFMHT120_IDTight.SetMarkerColor(ROOT.kGreen+1)
-hEff_HLT_PFMET120_PFMHT120_IDTight.SetMarkerStyle(22)
+hEff_HLT_PFMET120_PFMHT120_IDTight = SetStyle(hEff_HLT_PFMET120_PFMHT120_IDTight, ROOT.kGreen+1, 22)
 hEff_HLT_PFMET120_PFMHT120_IDTight.Draw("pe same")
 legend.AddEntry(hEff_HLT_PFMET120_PFMHT120_IDTight, "HLT_PFMET120_PFMHT120_IDTight_v")
 
 # HLT_PFMETNoMu120_PFMHTNoMu120_IDTight
 hNum_HLT_PFMETNoMu120_PFMHTNoMu120_IDTight = workdir.Get("h_met_passtrig_HLT_PFMETNoMu120_PFMHTNoMu120_IDTight")
 hEff_HLT_PFMETNoMu120_PFMHTNoMu120_IDTight = ROOT.TGraphAsymmErrors(hNum_HLT_PFMETNoMu120_PFMHTNoMu120_IDTight, Denominator)
-hEff_HLT_PFMETNoMu120_PFMHTNoMu120_IDTight.SetLineColor(ROOT.kBlue)
-hEff_HLT_PFMETNoMu120_PFMHTNoMu120_IDTight.SetMarkerColor(ROOT.kBlue)
-hEff_HLT_PFMETNoMu120_PFMHTNoMu120_IDTight.SetMarkerStyle(34)
+hEff_HLT_PFMETNoMu120_PFMHTNoMu120_IDTight = SetStyle(hEff_HLT_PFMETNoMu120_PFMHTNoMu120_IDTight, ROOT.kBlue, 34)
 hEff_HLT_PFMETNoMu120_PFMHTNoMu120_IDTight.Draw("pe same")
 legend.AddEntry(hEff_HLT_PFMETNoMu120_PFMHTNoMu120_IDTight, "HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v")
 
 # HLT_PFMETTypeOne140_PFMHT140_IDTight_v
 hNum_HLT_PFMETTypeOne140_PFMHT140_IDTight = workdir.Get("h_met_passtrig_HLT_PFMETTypeOne140_PFMHT140_IDTight")
 hEff_HLT_PFMETTypeOne140_PFMHT140_IDTight = ROOT.TGraphAsymmErrors(hNum_HLT_PFMETTypeOne140_PFMHT140_IDTight, Denominator)
-hEff_HLT_PFMETTypeOne140_PFMHT140_IDTight.SetLineColor(ROOT.kRed)
-hEff_HLT_PFMETTypeOne140_PFMHT140_IDTight.SetMarkerColor(ROOT.kRed)
-hEff_HLT_PFMETTypeOne140_PFMHT140_IDTight.SetMarkerStyle(29)
+hEff_HLT_PFMETTypeOne140_PFMHT140_IDTight = SetStyle(hEff_HLT_PFMETTypeOne140_PFMHT140_IDTight, ROOT.kRed, 29)
 hEff_HLT_PFMETTypeOne140_PFMHT140_IDTight.Draw("pe same")
 legend.AddEntry(hEff_HLT_PFMETTypeOne140_PFMHT140_IDTight, "HLT_PFMETTypeOne140_PFMHT140_IDTight_v")
 
@@ -102,3 +108,48 @@ legend.Draw("same")
 canvas.Update()
 canvas.Modified()
 canvas.SaveAs("METEfficiency_NanoAOD.pdf")
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# Comparison between triggers with different thresholds:
+# - HLT_PFMET120_PFMHT120_IDTight
+# - HLT_PFMET130_PFMHT130_IDTight
+# - HLT_PFMET140_PFMHT140_IDTight
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+canvas=getCanvas()
+legend=createLegend()
+
+Denominator = workdir.Get("h_met_all")
+
+# HLT_PFMET120_PFMHT120_IDTight
+hEff_HLT_PFMET120_PFMHT120_IDTight.Draw("ap")
+legend.AddEntry(hEff_HLT_PFMET120_PFMHT120_IDTight, "HLT_PFMET120_PFMHT120_IDTight_v")
+
+# HLT_PFMET130_PFMHT130_IDTight
+hNum_HLT_PFMET130_PFMHT130_IDTight = workdir.Get("h_met_passtrig_HLT_PFMET130_PFMHT130_IDTight")
+hEff_HLT_PFMET130_PFMHT130_IDTight = ROOT.TGraphAsymmErrors(hNum_HLT_PFMET130_PFMHT130_IDTight, Denominator)
+hEff_HLT_PFMET130_PFMHT130_IDTight = SetStyle(hEff_HLT_PFMET130_PFMHT130_IDTight, ROOT.kRed, 22)
+hEff_HLT_PFMET130_PFMHT130_IDTight.Draw("pe same")
+legend.AddEntry(hEff_HLT_PFMET130_PFMHT130_IDTight, "HLT_PFMET130_PFMHT130_IDTight_v")
+
+# HLT_PFMET140_PFMHT140_IDTight
+hNum_HLT_PFMET140_PFMHT140_IDTight = workdir.Get("h_met_passtrig_HLT_PFMET140_PFMHT140_IDTight")
+hEff_HLT_PFMET140_PFMHT140_IDTight = ROOT.TGraphAsymmErrors(hNum_HLT_PFMET140_PFMHT140_IDTight, Denominator)
+hEff_HLT_PFMET140_PFMHT140_IDTight = SetStyle(hEff_HLT_PFMET140_PFMHT140_IDTight, ROOT.kBlue, 34)
+hEff_HLT_PFMET140_PFMHT140_IDTight.Draw("pe same")
+legend.AddEntry(hEff_HLT_PFMET140_PFMHT140_IDTight, "HLT_PFMET140_PFMHT140_IDTight")
+
+# Additional text
+tex_cms = AddCMSText()
+tex_cms.Draw("same")
+
+private = AddPrivateWorkText()
+private.Draw("same")
+
+header = ROOT.TLatex()
+header.SetTextSize(0.04)
+header.DrawLatexNDC(0.57, 0.905, "2022, #sqrt{s} = 13.6 TeV")
+
+legend.Draw("same")
+canvas.Update()
+canvas.Modified()
+canvas.SaveAs("METEfficiency_HLT_PFMETX_PFMHTX_IDTight_NanoAOD.pdf")
