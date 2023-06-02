@@ -96,10 +96,6 @@ void plot_trigeff_met (const TString& infile = "histos_METTrigAnalyzer.root") {
   legend->AddEntry(h_met_eff_HLT_PFMETTypeOne140_PFMHT140_IDTight_v, "HLT_PFMETTypeOne140_PFMHT140_IDTight_v");
   legend->Draw("same");
   
-  TLatex texcms;
-  texcms.SetTextAlign(12);
-  texcms.DrawLatex(0.58, 0.95, "CMS");
-  
   c_met->Modified();
   c_met->Update();
   

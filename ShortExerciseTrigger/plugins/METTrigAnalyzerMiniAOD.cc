@@ -167,15 +167,18 @@ METTrigAnalyzerMiniAOD::analyze(const edm::Event& iEvent, const edm::EventSetup&
       double pt  = ele->pt();
       double phi = ele->phi();
       double eta = ele->eta();
-      double dPhi= reco::deltaPhi(phi, met_phi);
-      if (!PassOfflineElectronSelection(&*ele, PV)) continue;
+      //double dPhi= reco::deltaPhi(phi, met_phi);
+      //if (!PassOfflineElectronSelection(&*ele, PV)) continue;
+      
       if (pt < 40.0) continue;
-      if (dPhi < 0.5) continue;
-      if (0) std::cout << "Electron "<<nelectrons<<" pt="<<pt<<"  eta="<<eta<<"  phi="<<phi<<"   dPhi(e, met)="<<dPhi<<"   met="<<met<<std::endl;
+      if (std::abs(eta) > 2.4) continue;
+      
+      //if (dPhi < 0.5) continue;
+      //if (0) std::cout << "Electron "<<nelectrons<<" pt="<<pt<<"  eta="<<eta<<"  phi="<<phi<<"   dPhi(e, met)="<<dPhi<<"   met="<<met<<std::endl;
       nelectrons++;
     }
   
-  // Require exactly one tight electron
+  // Require at least one electron
   if (nelectrons != 1) return;
   
   if (verbose_) cout << endl;
@@ -239,7 +242,10 @@ METTrigAnalyzerMiniAOD::analyze(const edm::Event& iEvent, const edm::EventSetup&
   return;
 }
 
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+// CutBasedID Recommendations for Run-3:
 // From: https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedElectronIdentificationRun3#Offline_selection_criteria_for_v
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 bool METTrigAnalyzerMiniAOD::PassOfflineElectronSelection(const pat::Electron * ele, reco::Vertex::Point PV)
 {
   const reco::GsfTrackRef gsfTrack = ele->gsfTrack();

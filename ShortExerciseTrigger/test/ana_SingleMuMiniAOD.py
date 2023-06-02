@@ -19,7 +19,13 @@ process.maxEvents = cms.untracked.PSet(
 
 # Input source
 process.source = cms.Source("PoolSource",
-   fileNames = cms.untracked.vstring('/store/data/Run2022F/Muon/MINIAOD/PromptReco-v1/000/360/390/00000/282e5859-6f59-41bc-ae92-3892ec9aa3af.root'),
+   fileNames = cms.untracked.vstring('file:/eos/user/c/cmsdas/2023/short-ex-trg/ex2/Muon2022F_MiniAOD/skim_116.root',
+                                     'file:/eos/user/c/cmsdas/2023/short-ex-trg/ex2/Muon2022F_MiniAOD/skim_11.root',
+                                     'file:/eos/user/c/cmsdas/2023/short-ex-trg/ex2/Muon2022F_MiniAOD/skim_108.root',
+                                     'file:/eos/user/c/cmsdas/2023/short-ex-trg/ex2/Muon2022F_MiniAOD/skim_105.root',
+                                     'file:/eos/user/c/cmsdas/2023/short-ex-trg/ex2/Muon2022F_MiniAOD/skim_104.root',
+                                     'file:/eos/user/c/cmsdas/2023/short-ex-trg/ex2/Muon2022F_MiniAOD/skim_102.root'),
+#'/store/data/Run2022F/Muon/MINIAOD/PromptReco-v1/000/360/390/00000/282e5859-6f59-41bc-ae92-3892ec9aa3af.root'),
 )
 
 

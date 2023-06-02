@@ -77,7 +77,12 @@ class TrigMETAnalysis(Module):
         return True
 
 preselection=""
-files=["./EGamma_Run2022F_NANOAOD_954126e8-0a59-40dd-a6c4-714aa66c27e8.root", "./EGamma_Run2022F_NANOAOD_a7a95d36-145d-42c8-a6b3-88bb43dcc394.root"]
+files=["/eos/user/c/cmsdas/2023/short-ex-trg/ex1/EGamma2022F_NanoAOD/EGamma_2022F_NanoAOD_b6503dc7-0f42-42bc-be8c-3196bf5c9cff.root",
+       "/eos/user/c/cmsdas/2023/short-ex-trg/ex1/EGamma2022F_NanoAOD/EGamma_2022F_NanoAOD_c88115f8-68e6-4951-8d30-3ca9516d4b6c.root",
+       "/eos/user/c/cmsdas/2023/short-ex-trg/ex1/EGamma2022F_NanoAOD/EGamma_2022F_NanoAOD_414d734d-c1da-47c5-9146-5d9dab770358.root",
+       "/eos/user/c/cmsdas/2023/short-ex-trg/ex1/EGamma2022F_NanoAOD/EGamma_Run2022F_NANOAOD_a7a95d36-145d-42c8-a6b3-88bb43dcc394.root",
+       "/eos/user/c/cmsdas/2023/short-ex-trg/ex1/EGamma2022F_NanoAOD/EGamma_Run2022F_NANOAOD_954126e8-0a59-40dd-a6c4-714aa66c27e8.root",
+       ]
 reference_paths = ["Ele32_WPTight_Gsf"]
 signal_paths    = ["PFMET120_PFMHT120_IDTight", "PFMET130_PFMHT130_IDTight", "PFMET140_PFMHT140_IDTight", "PFMETTypeOne140_PFMHT140_IDTight", "PFMETNoMu120_PFMHTNoMu120_IDTight",
                    "PFMETNoMu130_PFMHTNoMu130_IDTight", "PFMETNoMu140_PFMHTNoMu140_IDTight"]
