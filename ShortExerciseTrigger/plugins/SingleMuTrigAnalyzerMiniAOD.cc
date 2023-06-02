@@ -37,11 +37,11 @@ SingleMuTrigAnalyzerMiniAOD::SingleMuTrigAnalyzerMiniAOD(const edm::ParameterSet
   triggerObjectStandAloneToken_ = consumes<pat::TriggerObjectStandAloneCollection> (ps.getUntrackedParameter<edm::InputTag>("triggerObjectsStandAloneTag", edm::InputTag("slimmedPatTrigger")));
   muonsToken_ = consumes<View<pat::Muon> > (ps.getUntrackedParameter<edm::InputTag>("muonsInputTag",edm::InputTag("slimmedMuons")));
   vtxToken_ = consumes<reco::VertexCollection> (ps.getUntrackedParameter<edm::InputTag>("vtxInputTag",edm::InputTag("offlineSlimmedPrimaryVertices")));
-  tagPt_ = ps.getUntrackedParameter<double>("tagPt",25.);
+  tagPt_ = ps.getUntrackedParameter<double>("tagPt",28.);
   tagEta_ = ps.getUntrackedParameter<double>("tagEta",2.4);
   probePt_ = ps.getUntrackedParameter<double>("probePt",20.);
   probeEta_ = ps.getUntrackedParameter<double>("probeEta",2.4);
-  verbose_ = ps.getUntrackedParameter<bool>("verbose",false);
+  verbose_ = ps.getUntrackedParameter<bool>("verbose", false);
     
   // histogram setup
   edm::Service<TFileService> fs;
@@ -98,7 +98,7 @@ SingleMuTrigAnalyzerMiniAOD::analyze(const edm::Event& iEvent, const edm::EventS
   using namespace edm;
   using namespace reco;
   using namespace trigger;
-
+  
   if (verbose_) cout << endl;
 
   // get event products

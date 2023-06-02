@@ -41,7 +41,7 @@ process.configurationMetadata = cms.untracked.PSet(
 # Output definition
 
 process.TFileService = cms.Service("TFileService",
-                                   fileName = cms.string('histos_SingleMuTrigAnalyzer.root')
+                                   fileName = cms.string('histos_SingleMuTrigAnalyzer_MiniAOD.root')
 )
 
 ### analyzer configuration
