@@ -19,13 +19,9 @@ process.maxEvents = cms.untracked.PSet(
 
 # Input source
 process.source = cms.Source("PoolSource",
-   fileNames = cms.untracked.vstring('file:/eos/user/c/cmsdas/2023/short-ex-trg/ex2/Muon2022F_MiniAOD/skim_116.root',
-                                     'file:/eos/user/c/cmsdas/2023/short-ex-trg/ex2/Muon2022F_MiniAOD/skim_11.root',
-                                     'file:/eos/user/c/cmsdas/2023/short-ex-trg/ex2/Muon2022F_MiniAOD/skim_108.root',
-                                     'file:/eos/user/c/cmsdas/2023/short-ex-trg/ex2/Muon2022F_MiniAOD/skim_105.root',
-                                     'file:/eos/user/c/cmsdas/2023/short-ex-trg/ex2/Muon2022F_MiniAOD/skim_104.root',
-                                     'file:/eos/user/c/cmsdas/2023/short-ex-trg/ex2/Muon2022F_MiniAOD/skim_102.root'),
-#'/store/data/Run2022F/Muon/MINIAOD/PromptReco-v1/000/360/390/00000/282e5859-6f59-41bc-ae92-3892ec9aa3af.root'),
+                            fileNames = cms.untracked.vstring(
+                                    'file:/eos/user/c/cmsdas/2024/short-ex-triggers/skimmedMINIAOD_Muon_2024/test/skim.root'
+                            ),
 )
 
 
@@ -41,16 +37,15 @@ process.configurationMetadata = cms.untracked.PSet(
 # Output definition
 
 process.TFileService = cms.Service("TFileService",
-                                   fileName = cms.string('histos_SingleMuTrigAnalyzer_MiniAOD.root')
+                                   fileName = cms.string('histos_SingleMuTrigAnalyzer.root')
 )
 
 ### analyzer configuration
-
 process.singleMuTrigAnalyzerMiniAOD = cms.EDAnalyzer("SingleMuTrigAnalyzerMiniAOD")
-process.singleMuTrigAnalyzerMiniAOD.triggerName = cms.untracked.string("HLT_IsoMu24_v15") # HLT_IsoMu27_v18
+process.singleMuTrigAnalyzerMiniAOD.triggerName = cms.untracked.string("HLT_IsoMu24_v17")
 process.singleMuTrigAnalyzerMiniAOD.verbose = cms.untracked.bool(False)
 
-process.GlobalTag.globaltag = "124X_dataRun3_Prompt_v10"
+process.GlobalTag.globaltag = "140X_dataRun3_Prompt_v2"
 
 # Path and EndPath definitions
 process.HLTanalyzers = cms.Path(process.singleMuTrigAnalyzerMiniAOD)

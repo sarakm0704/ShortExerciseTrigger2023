@@ -1,50 +1,111 @@
-/** \class SingleMuTrigAnalyzerMiniAOD
- *
- * See header file for documentation
- *
- *  \author Dominick Olivito
- *
- */
+#include "FWCore/ServiceRegistry/interface/ServiceMaker.h"
 
+#include "FWCore/Framework/interface/Frameworkfwd.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
+#include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/MakerMacros.h"
+
+#include "FWCore/ServiceRegistry/interface/Service.h"
+#include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Common/interface/TriggerNames.h"
 #include "FWCore/Common/interface/TriggerResultsByName.h"
-#include "ShortExerciseTrigger2023/ShortExerciseTrigger/interface/SingleMuTrigAnalyzerMiniAOD.h"
 
+#include "FWCore/Utilities/interface/InputTag.h"
+
+#include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 #include "DataFormats/HLTReco/interface/TriggerObject.h"
+#include "DataFormats/Common/interface/TriggerResults.h"
+#include "DataFormats/PatCandidates/interface/TriggerObjectStandAlone.h"
+#include "DataFormats/PatCandidates/interface/Muon.h"
+
+#include "DataFormats/Common/interface/ValueMap.h"
+
+#include "DataFormats/VertexReco/interface/VertexFwd.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 
+#include "CommonTools/UtilAlgos/interface/TFileService.h"
+
 // ROOT includes
 #include "Math/VectorUtil.h"
+#include <TLorentzVector.h>
 
 #include <cassert>
 
 using namespace reco;
 using namespace edm;
+using namespace std;
+using namespace trigger;
+
+//
+// class declaration
+//
+class SingleMuTrigAnalyzerMiniAOD : public edm::one::EDAnalyzer <edm::one::SharedResources> {
+
+  typedef math::XYZTLorentzVectorF LorentzVector;
+
+ public:
+  explicit SingleMuTrigAnalyzerMiniAOD(const edm::ParameterSet&);
+  ~SingleMuTrigAnalyzerMiniAOD();
+  // Create Trigger Units before starting event processing
+  //virtual void beginRun(edm::Run const &, edm::EventSetup const&);
+  // but for now it is not working. leave it but commented out
+  virtual void analyze(const edm::Event&, const edm::EventSetup&);
+  bool analyzeTrigger(const edm::Event&, const edm::EventSetup&, const std::string& triggerName);
+
+ private:
+
+  void bookHists(edm::Service<TFileService>& fs, const std::string& suffix);
+  void fillHists(const LorentzVector& lv, const std::string& suffix);
+  float muonPFiso(const pat::Muon& mu);
+
+  /// module config parameters
+  std::string   processName_;
+  std::string   triggerName_;
+  edm::EDGetTokenT<edm::TriggerResults> triggerResultsToken_;
+  edm::EDGetTokenT<pat::TriggerObjectStandAloneCollection> triggerObjectStandAloneToken_;
+  edm::EDGetTokenT<edm::View<pat::Muon> > muonsToken_;
+  edm::EDGetTokenT<reco::VertexCollection> vtxToken_;
+  double tagPt_;
+  double tagEta_;
+  double probePt_;
+  double probeEta_;
+  bool verbose_;
+
+  /// additional class data memebers
+  edm::Handle<edm::TriggerResults>           triggerResultsHandle_;
+  HLTConfigProvider hltConfig_;
+
+  std::map<std::string,TH1F*> hists_1d_;
+
+};
 
 //
 // constructors and destructor
 //
 //____________________________________________________________________________
-SingleMuTrigAnalyzerMiniAOD::SingleMuTrigAnalyzerMiniAOD(const edm::ParameterSet& ps) 
-{
-  using namespace std;
-  using namespace edm;
-
-  processName_ = ps.getUntrackedParameter<std::string>("processName","HLT");
-  triggerName_ = ps.getUntrackedParameter<std::string>("triggerName","HLT_IsoMu24_v15");
-  triggerResultsToken_ = consumes<edm::TriggerResults> (ps.getUntrackedParameter<edm::InputTag>("triggerResultsTag", edm::InputTag("TriggerResults", "", "HLT")));
-  triggerObjectStandAloneToken_ = consumes<pat::TriggerObjectStandAloneCollection> (ps.getUntrackedParameter<edm::InputTag>("triggerObjectsStandAloneTag", edm::InputTag("slimmedPatTrigger")));
-  muonsToken_ = consumes<View<pat::Muon> > (ps.getUntrackedParameter<edm::InputTag>("muonsInputTag",edm::InputTag("slimmedMuons")));
-  vtxToken_ = consumes<reco::VertexCollection> (ps.getUntrackedParameter<edm::InputTag>("vtxInputTag",edm::InputTag("offlineSlimmedPrimaryVertices")));
-  tagPt_ = ps.getUntrackedParameter<double>("tagPt",28.);
-  tagEta_ = ps.getUntrackedParameter<double>("tagEta",2.4);
-  probePt_ = ps.getUntrackedParameter<double>("probePt",20.);
-  probeEta_ = ps.getUntrackedParameter<double>("probeEta",2.4);
-  verbose_ = ps.getUntrackedParameter<bool>("verbose", false);
-    
+SingleMuTrigAnalyzerMiniAOD::SingleMuTrigAnalyzerMiniAOD(const edm::ParameterSet& iConfig)
+  :
+  processName_(iConfig.getUntrackedParameter<std::string>("processName","HLT")),
+  triggerName_(iConfig.getUntrackedParameter<std::string>("triggerName","HLT_IsoMu24_v15")),
+  triggerResultsToken_(consumes<edm::TriggerResults> (iConfig.getUntrackedParameter<edm::InputTag>("triggerResultsTag", edm::InputTag("TriggerResults", "", "HLT")))),
+  triggerObjectStandAloneToken_(consumes<pat::TriggerObjectStandAloneCollection> (iConfig.getUntrackedParameter<edm::InputTag>("triggerObjectsStandAloneTag", edm::InputTag("slimmedPatTrigger")))),
+  muonsToken_(consumes<View<pat::Muon> > (iConfig.getUntrackedParameter<edm::InputTag>("muonsInputTag",edm::InputTag("slimmedMuons")))),
+  vtxToken_(consumes<reco::VertexCollection> (iConfig.getUntrackedParameter<edm::InputTag>("vtxInputTag",edm::InputTag("offlineSlimmedPrimaryVertices")))),
+  tagPt_(iConfig.getUntrackedParameter<double>("tagPt",25.)),
+  tagEta_(iConfig.getUntrackedParameter<double>("tagEta",2.4)),
+  probePt_(iConfig.getUntrackedParameter<double>("probePt",20.)),
+  probeEta_(iConfig.getUntrackedParameter<double>("probeEta",2.4)),
+  verbose_(iConfig.getUntrackedParameter<bool>("verbose",false))
+{    
   // histogram setup
+  usesResource(TFileService::kSharedResource);
   edm::Service<TFileService> fs;
+
+  if (not fs) {
+      throw edm::Exception(edm::errors::Configuration, "TFileService is not registered in cfg file");
+  }
+
   hists_1d_["h_passtrig"] = fs->make<TH1F>("h_passtrig" , "; passed trigger" , 2 , 0. , 2. );
   hists_1d_["h_mll_allpairs"] = fs->make<TH1F>("h_mll_allpairs" , "; m_{ll} [GeV]" , 75 , 0. , 150. );
   hists_1d_["h_mll_cut"] = fs->make<TH1F>("h_mll_cut" , "; m_{ll} [GeV]" , 75 , 0. , 150. );
@@ -62,6 +123,9 @@ SingleMuTrigAnalyzerMiniAOD::~SingleMuTrigAnalyzerMiniAOD()
 //
 // member functions
 //
+// currently beginRun is not working, temporal disable
+// initialize HLTConfigProvider inside of analyze instead
+/*
 //____________________________________________________________________________
 void
 SingleMuTrigAnalyzerMiniAOD::beginRun(edm::Run const & iRun, edm::EventSetup const& iSetup)
@@ -88,17 +152,14 @@ SingleMuTrigAnalyzerMiniAOD::beginRun(edm::Run const & iRun, edm::EventSetup con
   }
 
 }
+*/
 
 //____________________________________________________________________________
 // ------------ method called to produce the data  ------------
 void
 SingleMuTrigAnalyzerMiniAOD::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
-  using namespace std;
-  using namespace edm;
-  using namespace reco;
-  using namespace trigger;
-  
+
   if (verbose_) cout << endl;
 
   // get event products
@@ -113,6 +174,22 @@ SingleMuTrigAnalyzerMiniAOD::analyze(const edm::Event& iEvent, const edm::EventS
     cout << "Error in getting TriggerObjectStandAlone product from Event!" << endl;
     return;
   }
+
+  bool changed = true;
+  if (!hltConfig_.init(iEvent.getRun(), iSetup, processName_, changed)) {
+      edm::LogWarning("HLTAnalyzer") << "Initialization of HLTConfigProvider failed!";
+      return;
+  }
+
+  // Now you can access HLT paths, prescales, etc.
+  //const std::vector<std::string>& triggerNames = hltConfig_.triggerNames();
+  //for (size_t i = 0; i < triggerNames.size(); ++i) {
+  //    const std::string& triggerName = triggerNames[i];
+  //    //cout << triggerName << endl;
+  //    //bool triggerFired = TriggerResults->accept(i);
+  //    //int prescale = hltConfig_.prescaleValue(iEvent, iSetup, triggerName);
+  //    // Do something with the trigger information...
+  //}
 
   // sanity check
   assert(triggerResultsHandle_->size()==hltConfig_.size());
@@ -319,3 +396,5 @@ void SingleMuTrigAnalyzerMiniAOD::fillHists(const LorentzVector& lv, const std::
 float SingleMuTrigAnalyzerMiniAOD::muonPFiso(const pat::Muon& mu) {
   return (mu.pfIsolationR03().sumChargedHadronPt + std::max(0., mu.pfIsolationR03().sumNeutralHadronEt + mu.pfIsolationR03().sumPhotonEt - 0.5*mu.pfIsolationR03().sumPUPt))/mu.pt();
 }
+
+DEFINE_FWK_MODULE(SingleMuTrigAnalyzerMiniAOD);

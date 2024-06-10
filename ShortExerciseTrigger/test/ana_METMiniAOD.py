@@ -6,7 +6,7 @@ process = cms.Process('HLTANALYZER')
 process.load('Configuration.StandardSequences.Services_cff')
 process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
 process.load('FWCore.MessageService.MessageLogger_cfi')
-process.MessageLogger.cerr.FwkReport.reportEvery = 10000
+process.MessageLogger.cerr.FwkReport.reportEvery = 10
 process.load('Configuration.EventContent.EventContent_cff')
 process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
 process.load('Configuration.StandardSequences.MagneticField_AutoFromDBCurrent_cff')
@@ -20,12 +20,8 @@ process.maxEvents = cms.untracked.PSet(
 # Input source
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-                                'file:/eos/user/c/cmsdas/2023/short-ex-trg/ex1/EGamma2022F_MiniAOD/skim_2.root',
-                                'file:/eos/user/c/cmsdas/2023/short-ex-trg/ex1/EGamma2022F_MiniAOD/skim_12.root',
-                                'file:/eos/user/c/cmsdas/2023/short-ex-trg/ex1/EGamma2022F_MiniAOD/skim_126.root',
-                                'file:/eos/user/c/cmsdas/2023/short-ex-trg/ex1/EGamma2022F_MiniAOD/skim_127.root',
-                                'file:/eos/user/c/cmsdas/2023/short-ex-trg/ex1/EGamma2022F_MiniAOD/skim_135.root',
-                                'file:/eos/user/c/cmsdas/2023/short-ex-trg/ex1/EGamma2022F_MiniAOD/skim_204.root'),
+                                'file:/eos/user/c/cmsdas/2024/short-ex-triggers/skimmedMINIAOD_EGamma_2024/test/skim.root'
+                            ),
 )
 
 process.options = cms.untracked.PSet()
@@ -45,13 +41,13 @@ process.TFileService = cms.Service("TFileService",
 
 ### analyzer configuration
 process.metTrigAnalyzerMiniAOD = cms.EDAnalyzer("METTrigAnalyzerMiniAOD")
-process.metTrigAnalyzerMiniAOD.refTriggerName = cms.untracked.string("HLT_Ele32_WPTight_Gsf_v17")
-process.metTrigAnalyzerMiniAOD.sigTriggerNames= cms.untracked.vstring("HLT_PFMET120_PFMHT120_IDTight_v22", "HLT_PFMET130_PFMHT130_IDTight_v22", "HLT_PFMET140_PFMHT140_IDTight_v22",
-                                                                      "HLT_PFMETTypeOne140_PFMHT140_IDTight_v13", "HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v22", "HLT_PFMETNoMu130_PFMHTNoMu130_IDTight_v21",
-                                                                      "HLT_PFMETNoMu140_PFMHTNoMu140_IDTight_v21")
+process.metTrigAnalyzerMiniAOD.refTriggerName = cms.untracked.string("HLT_Ele32_WPTight_Gsf_v19")
+process.metTrigAnalyzerMiniAOD.sigTriggerNames= cms.untracked.vstring("HLT_PFMET120_PFMHT120_IDTight_v24", "HLT_PFMET130_PFMHT130_IDTight_v24", "HLT_PFMET140_PFMHT140_IDTight_v24",
+                                                                      "HLT_PFMETTypeOne140_PFMHT140_IDTight_v15", "HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v24", "HLT_PFMETNoMu130_PFMHTNoMu130_IDTight_v23",
+                                                                      "HLT_PFMETNoMu140_PFMHTNoMu140_IDTight_v23")
 process.metTrigAnalyzerMiniAOD.verbose = cms.untracked.bool(False)
 
-process.GlobalTag.globaltag = "124X_dataRun3_Prompt_v10"
+process.GlobalTag.globaltag = "140X_dataRun3_Prompt_v2"
 
 # Path and EndPath definitions
 process.HLTanalyzers = cms.Path(process.metTrigAnalyzerMiniAOD)

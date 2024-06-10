@@ -1,8 +1,5 @@
-# Trigger Short Exercise 2023
-Trigger short exercise CMS DAS @ CERN, June 2023
-
-See DAS twiki for detailed instructions:
-https://twiki.cern.ch/twiki/bin/viewauth/CMS/SWGuideCMSDataAnalysisSchoolCERN2023TriggerExercise
+# Trigger Short Exercise 2024
+Trigger short exercise CMS DAS @ CERN, June 2024
 
 ## Jupyter noteboooks
 
@@ -27,8 +24,8 @@ source /cvmfs/cms.cern.ch/cmsset_default.csh
 cd nobackup/
 mkdir -p CMSDAS2023/Trigger
 cd CMSDAS2023/Trigger
-cmsrel CMSSW_12_6_4
-cd CMSSW_12_6_4/src
+cmsrel CMSSW_14_0_7
+cd CMSSW_14_0_7/src
 cmsenv
 git clone https://github.com/marinakolosova/ShortExerciseTrigger2023.git
 scram b -j 4
@@ -41,7 +38,7 @@ And start Jupyter with this command:
 
 After a pause (while lxplus loads the necessary libraries for the first time) you should see a message like the following:
 
-    [I 11:30:05.670 NotebookApp] Serving notebooks from local directory: /afs/cern.ch/work/X/XXXX/cmsdas2023/nobackup/CMSDAS2023/Trigger/CMSSW_12_6_4/src
+    [I 11:30:05.670 NotebookApp] Serving notebooks from local directory: /afs/cern.ch/work/X/XXXX/cmsdas2023/nobackup/CMSDAS2023/Trigger/CMSSW_14_0_7/src
     [I 11:30:05.671 NotebookApp] Jupyter Notebook 6.4.12 is running at:
     [I 11:30:05.671 NotebookApp] http://localhost:8888/?token=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     [I 11:30:05.671 NotebookApp]  or http://127.0.0.1:8888/?token=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
