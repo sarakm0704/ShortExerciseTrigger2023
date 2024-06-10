@@ -92,7 +92,7 @@ SingleMuTrigAnalyzerMiniAOD::SingleMuTrigAnalyzerMiniAOD(const edm::ParameterSet
   triggerObjectStandAloneToken_(consumes<pat::TriggerObjectStandAloneCollection> (iConfig.getUntrackedParameter<edm::InputTag>("triggerObjectsStandAloneTag", edm::InputTag("slimmedPatTrigger")))),
   muonsToken_(consumes<View<pat::Muon> > (iConfig.getUntrackedParameter<edm::InputTag>("muonsInputTag",edm::InputTag("slimmedMuons")))),
   vtxToken_(consumes<reco::VertexCollection> (iConfig.getUntrackedParameter<edm::InputTag>("vtxInputTag",edm::InputTag("offlineSlimmedPrimaryVertices")))),
-  tagPt_(iConfig.getUntrackedParameter<double>("tagPt",25.)),
+  tagPt_(iConfig.getUntrackedParameter<double>("tagPt",28.)),
   tagEta_(iConfig.getUntrackedParameter<double>("tagEta",2.4)),
   probePt_(iConfig.getUntrackedParameter<double>("probePt",20.)),
   probeEta_(iConfig.getUntrackedParameter<double>("probeEta",2.4)),
