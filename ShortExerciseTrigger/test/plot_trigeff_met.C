@@ -22,13 +22,13 @@ void plot_trigeff_met (const TString& infile = "histos_METTrigAnalyzer.root") {
   // ---- Get all histograms
   
   TH1F* h_met_denom = (TH1F*) f_in->Get("metTrigAnalyzerMiniAOD/h_met_all");
-  TH1F* h_met_num_HLT_PFMET120_PFMHT120_IDTight_v = (TH1F*) f_in->Get("metTrigAnalyzerMiniAOD/h_met_passtrig_HLT_PFMET120_PFMHT120_IDTight_v22");
-  TH1F* h_met_num_HLT_PFMET130_PFMHT130_IDTight_v = (TH1F*) f_in->Get("metTrigAnalyzerMiniAOD/h_met_passtrig_HLT_PFMET130_PFMHT130_IDTight_v22");
-  TH1F* h_met_num_HLT_PFMET140_PFMHT140_IDTight_v = (TH1F*) f_in->Get("metTrigAnalyzerMiniAOD/h_met_passtrig_HLT_PFMET140_PFMHT140_IDTight_v22");
-  TH1F* h_met_num_HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v = (TH1F*) f_in->Get("metTrigAnalyzerMiniAOD/h_met_passtrig_HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v22");
-  TH1F* h_met_num_HLT_PFMETNoMu130_PFMHTNoMu130_IDTight_v = (TH1F*) f_in->Get("metTrigAnalyzerMiniAOD/h_met_passtrig_HLT_PFMETNoMu130_PFMHTNoMu130_IDTight_v21");
-  TH1F* h_met_num_HLT_PFMETNoMu140_PFMHTNoMu140_IDTight_v = (TH1F*) f_in->Get("metTrigAnalyzerMiniAOD/h_met_passtrig_HLT_PFMETNoMu140_PFMHTNoMu140_IDTight_v21");
-  TH1F* h_met_num_HLT_PFMETTypeOne140_PFMHT140_IDTight_v = (TH1F*) f_in->Get("metTrigAnalyzerMiniAOD/h_met_passtrig_HLT_PFMETTypeOne140_PFMHT140_IDTight_v13");
+  TH1F* h_met_num_HLT_PFMET120_PFMHT120_IDTight_v = (TH1F*) f_in->Get("metTrigAnalyzerMiniAOD/h_met_passtrig_HLT_PFMET120_PFMHT120_IDTight_v24");
+  TH1F* h_met_num_HLT_PFMET130_PFMHT130_IDTight_v = (TH1F*) f_in->Get("metTrigAnalyzerMiniAOD/h_met_passtrig_HLT_PFMET130_PFMHT130_IDTight_v24");
+  TH1F* h_met_num_HLT_PFMET140_PFMHT140_IDTight_v = (TH1F*) f_in->Get("metTrigAnalyzerMiniAOD/h_met_passtrig_HLT_PFMET140_PFMHT140_IDTight_v24");
+  TH1F* h_met_num_HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v = (TH1F*) f_in->Get("metTrigAnalyzerMiniAOD/h_met_passtrig_HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v24");
+  TH1F* h_met_num_HLT_PFMETNoMu130_PFMHTNoMu130_IDTight_v = (TH1F*) f_in->Get("metTrigAnalyzerMiniAOD/h_met_passtrig_HLT_PFMETNoMu130_PFMHTNoMu130_IDTight_v23");
+  TH1F* h_met_num_HLT_PFMETNoMu140_PFMHTNoMu140_IDTight_v = (TH1F*) f_in->Get("metTrigAnalyzerMiniAOD/h_met_passtrig_HLT_PFMETNoMu140_PFMHTNoMu140_IDTight_v23");
+  TH1F* h_met_num_HLT_PFMETTypeOne140_PFMHT140_IDTight_v = (TH1F*) f_in->Get("metTrigAnalyzerMiniAOD/h_met_passtrig_HLT_PFMETTypeOne140_PFMHT140_IDTight_v15");
   TH1F* h_met_num = (TH1F*) f_in->Get("metTrigAnalyzerMiniAOD/h_met_passtrig");
   
   // ---- Create TEfficiency histograms
