@@ -13,16 +13,25 @@ process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(100)
+    input = cms.untracked.int32(1000)
 )
 
 # Input source
 process.source = cms.Source("PoolSource",
    fileNames = cms.untracked.vstring(
-       '/store/data/Run2022F/Muon/MINIAOD/PromptReco-v1/000/360/390/00000/282e5859-6f59-41bc-ae92-3892ec9aa3af.root',
+        '/store/data/Run2023D/Muon0/MINIAOD/22Sep2023_v1-v1/2530000/0702e512-9557-4be0-a329-1a6c1ab4fbee.root',
+        '/store/data/Run2023D/Muon0/MINIAOD/22Sep2023_v1-v1/2530000/0702e512-9557-4be0-a329-1a6c1ab4fbee.root',
+        '/store/data/Run2023D/Muon0/MINIAOD/22Sep2023_v1-v1/2530000/0d9fa98c-b5ac-4bc0-8ab2-43ecd4546bb5.root',
+        '/store/data/Run2023D/Muon0/MINIAOD/22Sep2023_v1-v1/2530000/0fa372a0-9054-467a-ad6e-9da4e5782cf7.root',
+        '/store/data/Run2023D/Muon0/MINIAOD/22Sep2023_v1-v1/2530000/0fa55ced-a7cc-4a8a-a0e5-0381c3ac8e37.root',
+#        '/store/data/Run2023D/Muon0/MINIAOD/22Sep2023_v1-v1/2530000/16fcc5e6-5626-4c7a-8566-0af091c1904a.root',
+#        '/store/data/Run2023D/Muon0/MINIAOD/22Sep2023_v1-v1/2530000/194da3b5-dd63-4dfb-88af-fab8087cf75a.root',
+#        '/store/data/Run2023D/Muon0/MINIAOD/22Sep2023_v1-v1/2530000/20fed695-eb7a-4855-b24b-d49c38aab185.root',
+#        '/store/data/Run2023D/Muon0/MINIAOD/22Sep2023_v1-v1/2530000/21e2158f-336f-4832-a010-6caf2ea9f4b3.root',
+#        '/store/data/Run2023D/Muon0/MINIAOD/22Sep2023_v1-v1/2530000/21fbdf12-a42e-4b82-a77a-c3909c6bc732.root',
+#        '/store/data/Run2023D/Muon0/MINIAOD/22Sep2023_v1-v1/2530000/27a80b82-6bc2-4b42-a5ed-310783bebd46.root',
    ),
 )
-
 
 process.options = cms.untracked.PSet(
 
@@ -38,7 +47,7 @@ process.configurationMetadata = cms.untracked.PSet(
 # JSON
 
 import FWCore.PythonUtilities.LumiList as LumiList
-process.source.lumisToProcess = LumiList.LumiList(filename = 'Cert_Collisions2022_355100_362760_Golden_JSON.txt').getVLuminosityBlockRange()
+process.source.lumisToProcess = LumiList.LumiList(filename = 'Cert_Collisions2023_366442_370790_Golden_JSON.txt').getVLuminosityBlockRange()
 
 # skim definitions
 
@@ -65,7 +74,7 @@ process.Out = cms.OutputModule("PoolOutputModule",
                                ),
 )
   
-process.GlobalTag.globaltag = "124X_dataRun3_Prompt_v10"
+process.GlobalTag.globaltag = "140X_dataRun3_Prompt_v2"
 
 # Path and EndPath definitions
 process.output_step = cms.EndPath(process.Out)
